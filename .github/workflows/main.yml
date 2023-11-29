@@ -1,0 +1,26 @@
+name: Container Workflow
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  ACR_LOGON_SERVER: ${{ secrets.ACR_NAME }}.azurecr.io
+  IMAGE_NAME: ${{ secrets.ACR_NAME }}.azurecr.io/webapp:${{ github.sha }}
+
+jobs:
+  build-deploy-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+
+    - name: Build and Push Image
+      uses: docker/login-action@v3.0.0
+      with:
+        registry: ${{ env.ACR_LOGON_SERVER }} 
+        username: ${{ secrets.SERVICE_PRINCIPAL_ID }}
+        password: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
+
+    - run: docker build . -t ${{ env.IMAGE_NAME }}
+    - run: docker push ${{ env.IMAGE_NAME }}
