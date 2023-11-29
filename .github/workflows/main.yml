@@ -22,5 +22,5 @@ jobs:
         username: ${{ secrets.SERVICE_PRINCIPAL_ID }}
         password: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
 
-    - run: cd ContTest; docker build . -t ${{ env.IMAGE_NAME }}
-    - run: cd ContTest; docker push ${{ env.IMAGE_NAME }}
+    - run: docker build . -t ${{ env.IMAGE_NAME }} -f ContTest/Dockerfile
+    - run: docker push ${{ env.IMAGE_NAME }}
